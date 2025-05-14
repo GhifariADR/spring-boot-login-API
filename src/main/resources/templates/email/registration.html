@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			body { font-family: Arial, sans-serif; padding: 20px; }
+			.btn {
+				background-color: #2e86de;
+				color: white;
+				padding: 10px 20px;
+				text-decoration: none;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<h2 th:text="'Halo ' + ${username} + ','"></h2>
+		<p>Selamat! Akun kamu berhasil <strong>terdaftar</strong>.</p>
+		<p>Silakan login dan mulai menggunakan aplikasi.</p>
+		<br>
+		<a class="btn" th:href="@{https://your-app.com/login}">Login Sekarang</a>
+		<br><br>
+		<p style="font-size: 12px; color: gray;">Email ini dikirim otomatis oleh sistem.</p>
+	</body>
+</html>

@@ -2,6 +2,7 @@ package com.example.auth.controller;
 
 import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
+import com.example.auth.Service.EmailService;
 import com.example.auth.model.*;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
@@ -24,6 +25,9 @@ public class AuthController {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	private EmailService emailService;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -90,6 +94,8 @@ public class AuthController {
 		user.setPassword(hashedPassword);
 		user.setEmail(request.getEmail());
 		user.setRole(roleOpt.get());
+
+		emailService.sendRegistrationEmail(request.getEmail(), request.getUsername());
 
 		userRepository.save(user);
 		return ResponseEntity.ok(ApiResponse.success("User registered successfully",null));
