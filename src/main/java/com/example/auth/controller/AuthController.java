@@ -1,7 +1,9 @@
 package com.example.auth.controller;
 
+import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
 import com.example.auth.model.*;
+import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -62,15 +67,29 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody LoginRequest request) {
-		if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+	public ResponseEntity<?> register(@RequestBody RegsiterRequest request) {
+		Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
+		Optional<Role> roleOpt = roleRepository.findByName("user");
+
+		if (userOpt.isPresent()) {
 			return ResponseEntity.ok(ApiResponse.error("Username already exists",null));
 		}
+
+		if (userRepository.existsByEmail(request.getEmail())){
+			return ResponseEntity.ok(ApiResponse.error("Email already exists",null));
+		}
+
+		if (!roleOpt.isPresent()) {
+			return ResponseEntity.ok(ApiResponse.error("Role doesn't exists",null));
+		}
+
 		String hashedPassword = new BCryptPasswordEncoder().encode(request.getPassword());
 
 		User user = new User();
 		user.setUsername(request.getUsername());
 		user.setPassword(hashedPassword);
+		user.setEmail(request.getEmail());
+		user.setRole(roleOpt.get());
 
 		userRepository.save(user);
 		return ResponseEntity.ok(ApiResponse.success("User registered successfully",null));
