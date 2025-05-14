@@ -7,6 +7,7 @@ import com.example.auth.model.*;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -72,6 +74,7 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody RegsiterRequest request) {
+		log.info("Membuat user: {}", request.getUsername());
 		Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
 		Optional<Role> roleOpt = roleRepository.findByName("user");
 
@@ -96,6 +99,7 @@ public class AuthController {
 		user.setRole(roleOpt.get());
 
 		emailService.sendRegistrationEmail(request.getEmail(), request.getUsername());
+		log.info("email has been sent");
 
 		userRepository.save(user);
 		return ResponseEntity.ok(ApiResponse.success("User registered successfully",null));
