@@ -1,5 +1,6 @@
 package com.example.auth.controller;
 
+import com.example.auth.Service.UserService;
 import com.example.auth.model.ApiResponse;
 import com.example.auth.Entity.Role;
 import com.example.auth.model.RoleRequest;
@@ -44,6 +45,10 @@ public class RoleController {
 		Optional<User> userOpt = userRepository.findById(userId);
 		if (!userOpt.isPresent()){
 			return ResponseEntity.ok(ApiResponse.error("No users found",null));
+		}
+
+		if (UserService.isAdminOrSuperAdmin(userOpt.get())){
+			return ResponseEntity.ok(ApiResponse.error("Only admin or super admin can create roles",null));
 		}
 
 		Optional<Role> roleOpt = roleRepository.findByName(request.getName());

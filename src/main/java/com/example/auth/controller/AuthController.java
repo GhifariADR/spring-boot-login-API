@@ -44,10 +44,11 @@ public class AuthController {
 				if(user.getToken() != null){
 					if (!JwtUtil.isTokenExpired(user.getToken())){
 						responseToken.put("token", user.getToken());
-						System.out.println("User already logged in");
+						log.info("User already login, token valid");
 						return ResponseEntity
 								.ok(ApiResponse.error("User already logged in", responseToken));
 					} else {
+						log.info("token expired, create a new token");
 						String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
 						user.setToken(newToken);
 						userRepository.save(user);
