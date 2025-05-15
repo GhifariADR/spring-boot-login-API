@@ -7,6 +7,7 @@ import com.example.auth.model.*;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @Slf4j
+@Tag(name = "Authentication" , description = "API untuk login dan register")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -40,16 +42,19 @@ public class AuthController {
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			if (encoder.matches(loginRequest.getPassword(), user.getPassword())) {
 				if(user.getToken() != null){
-					responseToken.put("token", user.getToken());
-					System.out.println("User already logged in");
-					return ResponseEntity
-							.ok(ApiResponse.error("User already logged in", responseToken));
+					if (!JwtUtil.isTokenExpired(user.getToken())){
+						responseToken.put("token", user.getToken());
+						System.out.println("User already logged in");
+						return ResponseEntity
+								.ok(ApiResponse.error("User already logged in", responseToken));
+					} else {
+						String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
+						user.setToken(newToken);
+						userRepository.save(user);
+						responseToken.put("token", newToken);
+						return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
+					}
 				}
-				String token = JwtUtil.generateToken(user.getId(), user.getUsername());
-				user.setToken(token);
-				userRepository.save(user);
-				responseToken.put("token", token);
-				return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
 			}
 		}
 		return ResponseEntity.ok(ApiResponse.error("Invalid username or password",null));

@@ -7,13 +7,18 @@ import com.example.auth.Entity.User;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "Role" , description = "API untuk pengelolaan role")
 @RequestMapping("/role")
 public class RoleController {
 
@@ -24,10 +29,16 @@ public class RoleController {
 	private UserRepository userRepository;
 
 	@PostMapping("/create")
-	public ResponseEntity<?> createRole(
-			@RequestHeader("Authorization") String authHeader, @RequestBody RoleRequest request){
+	public ResponseEntity<?> createRole(@RequestBody RoleRequest request, HttpServletRequest headerRequest){
 
-		String token = authHeader.replace("Bearer ", "");
+		String authHeader = headerRequest.getHeader("Authorization");
+
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(ApiResponse.error("Missing or invalid Authorization header", null));
+		}
+
+		String token = authHeader.substring(7);
 		Long userId = JwtUtil.extractUserId(token);
 
 		Optional<User> userOpt = userRepository.findById(userId);
@@ -46,7 +57,7 @@ public class RoleController {
 		role.setCreatedBy(userOpt.get());
 
 		roleRepository.save(role);
-		return ResponseEntity.ok(ApiResponse.error("Role successfully created ",null));
+		return ResponseEntity.ok(ApiResponse.success("Role successfully created ",null));
 
 	}
 }

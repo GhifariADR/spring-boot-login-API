@@ -1,9 +1,6 @@
 package com.example.auth.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -40,5 +37,19 @@ public class JwtUtil {
 				.getBody();
 
 		return claims.get("id", Long.class);
+	}
+
+	public static boolean isTokenExpired(String token){
+		try{
+			Claims claims = Jwts.parser()
+					.setSigningKey(SECRET_KEY)
+					.parseClaimsJws(token)
+					.getBody();
+
+			return claims.getExpiration().before(new Date());
+		} catch (ExpiredJwtException e){
+			return true;
+		}
+
 	}
 }

@@ -3,7 +3,11 @@ package com.example.auth.controller;
 import com.example.auth.model.ApiResponse;
 import com.example.auth.Entity.User;
 import com.example.auth.repository.UserRepository;
+import com.example.auth.security.JwtUtil;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "User" , description = "API untuk pengelolaan user")
 @RequestMapping("/user")
 public class UserController {
 
