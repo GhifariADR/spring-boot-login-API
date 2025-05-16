@@ -35,6 +35,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+		log.info("Login process username = " + loginRequest.getUsername());
 		Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
 		Map<String, String> responseToken = new HashMap<>();
 		if (userOpt.isPresent()){
@@ -55,6 +56,12 @@ public class AuthController {
 						responseToken.put("token", newToken);
 						return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
 					}
+				} else {
+					String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
+					user.setToken(newToken);
+					userRepository.save(user);
+					responseToken.put("token", newToken);
+					return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
 				}
 			}
 		}
