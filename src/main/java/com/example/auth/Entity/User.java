@@ -1,6 +1,7 @@
 package com.example.auth.Entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -10,15 +11,25 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "username")
 	private String username;
-	private String password;
-	private String email;
-	private String token;
 
+	@Column(name = "password")
+	private String password;
+
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "token")
+	private String token;
 
 	@ManyToOne
 	@JoinColumn(name = "role_id")
 	private Role role;
+
+	@Column(name = "last_login")
+	private Date lastLogin;
+
 
 	public Long getId() {
 		return id;
@@ -66,5 +77,13 @@ public class User {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 }

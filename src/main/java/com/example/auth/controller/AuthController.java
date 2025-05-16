@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +36,8 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+		Date currentTime = new Date();
+
 		log.info("Login process username = " + loginRequest.getUsername());
 		Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
 		Map<String, String> responseToken = new HashMap<>();
@@ -46,12 +49,15 @@ public class AuthController {
 					if (!JwtUtil.isTokenExpired(user.getToken())){
 						responseToken.put("token", user.getToken());
 						log.info("User already login, token valid");
+						user.setLastLogin(currentTime);
+						userRepository.save(user);
 						return ResponseEntity
 								.ok(ApiResponse.error("User already logged in", responseToken));
 					} else {
 						log.info("token expired, create a new token");
 						String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
 						user.setToken(newToken);
+						user.setLastLogin(currentTime);
 						userRepository.save(user);
 						responseToken.put("token", newToken);
 						return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
@@ -59,6 +65,7 @@ public class AuthController {
 				} else {
 					String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
 					user.setToken(newToken);
+					user.setLastLogin(currentTime);
 					userRepository.save(user);
 					responseToken.put("token", newToken);
 					return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));

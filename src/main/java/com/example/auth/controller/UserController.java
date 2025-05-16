@@ -3,18 +3,26 @@ package com.example.auth.controller;
 import com.example.auth.Service.UserService;
 import com.example.auth.model.ApiResponse;
 import com.example.auth.Entity.User;
+import com.example.auth.model.UserResponse;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
@@ -25,13 +33,33 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@PostMapping("/getAll")
-	public ResponseEntity<?> getAllUsers(){
-		List<User> users = userRepository.findAll();
-		if (users.isEmpty()){
+	@GetMapping ("/getAll")
+	public ResponseEntity<?> getAllUsers(
+			@PageableDefault(page = 0, size = 3, sort = "username", direction = Sort.Direction.ASC) Pageable pageable
+	)
+	{
+		Page<User> usersPage = userRepository.findAll(pageable);
+
+		if (usersPage.isEmpty()){
 			return ResponseEntity.ok(ApiResponse.error("No users found",null));
 		}
-		return ResponseEntity.ok(ApiResponse.success("Users found", users));
+
+		List<UserResponse> response = new ArrayList<>();
+
+		for (User user : usersPage){
+			UserResponse userResponse = new UserResponse(user.getId(), user.getUsername(), user.getEmail(),user.getRole().getName());
+			response.add(userResponse);
+		}
+
+		HashMap<String, Object> responseApi = new HashMap<>();
+
+		responseApi.put("users", response);
+		responseApi.put("currentPage", usersPage.getNumber());
+		responseApi.put("totalPage",usersPage.getTotalPages());
+		responseApi.put("totalItems", usersPage.getTotalElements());
+
+
+		return ResponseEntity.ok(ApiResponse.success("Users found", responseApi));
 
 	}
 
