@@ -1,5 +1,6 @@
 package com.example.auth.controller;
 
+import com.example.auth.Service.UserService;
 import com.example.auth.model.ApiResponse;
 import com.example.auth.Entity.User;
 import com.example.auth.repository.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,24 @@ public class UserController {
 	}
 
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteUser(@PathVariable Long id){
+	public ResponseEntity<?> deleteUser(@PathVariable Long id, HttpServletRequest headerRequest){
+
+		String authHeader = headerRequest.getHeader("Authorization");
+
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(ApiResponse.error("Missing or invalid Authorization header", null));
+		}
+
+		String token = authHeader.substring(7);
+		Long currentUserId = JwtUtil.extractUserId(token);
+
+		Optional<User> currentUser = userRepository.findById(currentUserId);
+		if(UserService.isAdminOrSuperAdmin(currentUser.get())){
+			return ResponseEntity.ok(ApiResponse.error("Only admin or super admin can delete user",null));
+		}
+
+
 		Optional<User> optUser = userRepository.findById(id);
 
 		if (!optUser.isPresent()){
