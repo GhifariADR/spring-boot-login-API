@@ -1,4 +1,4 @@
-package com.example.auth.model;
+package com.example.auth.DTO;
 
 public class RoleRequest {
 	private String name;

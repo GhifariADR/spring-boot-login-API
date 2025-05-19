@@ -1,9 +1,9 @@
 package com.example.auth.controller;
 
 import com.example.auth.Service.UserService;
-import com.example.auth.model.ApiResponse;
+import com.example.auth.DTO.ApiResponse;
 import com.example.auth.Entity.User;
-import com.example.auth.model.UserResponse;
+import com.example.auth.DTO.UserResponse;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -43,8 +42,6 @@ public class UserController {
 		if (usersPage.isEmpty()){
 			return ResponseEntity.ok(ApiResponse.error("No users found",null));
 		}
-
-//		List<UserResponse> response = new ArrayList<>();
 
 		List<UserResponse> response = usersPage.stream()
 				.map(user -> new UserResponse(

@@ -1,13 +1,15 @@
 package com.example.auth.controller;
 
+import com.example.auth.DTO.ApiResponse;
+import com.example.auth.DTO.LoginRequest;
+import com.example.auth.DTO.LogoutRequest;
+import com.example.auth.DTO.RegsiterRequest;
 import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
 import com.example.auth.Service.EmailService;
 import com.example.auth.Service.UserService;
-import com.example.auth.model.*;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
-import com.example.auth.security.JwtUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,7 @@ public class AuthController {
 		Map<String, String> responseToken = new HashMap<>();
 
 		if (!userOpt.isPresent() || !encoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())){
+			log.info("Invalid Credential");
 			return ResponseEntity.ok(ApiResponse.error("Invalid Credential", null));
 
 		}
@@ -59,8 +62,6 @@ public class AuthController {
 		responseToken.put("token", token);
 
 		return ResponseEntity.ok(ApiResponse.success("Login successful", responseToken));
-
-
 	}
 
 	@PostMapping("/logout")

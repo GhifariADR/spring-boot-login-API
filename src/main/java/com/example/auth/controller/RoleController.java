@@ -1,9 +1,9 @@
 package com.example.auth.controller;
 
 import com.example.auth.Service.UserService;
-import com.example.auth.model.ApiResponse;
+import com.example.auth.DTO.ApiResponse;
 import com.example.auth.Entity.Role;
-import com.example.auth.model.RoleRequest;
+import com.example.auth.DTO.RoleRequest;
 import com.example.auth.Entity.User;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
