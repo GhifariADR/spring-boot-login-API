@@ -3,6 +3,7 @@ package com.example.auth.controller;
 import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
 import com.example.auth.Service.EmailService;
+import com.example.auth.Service.UserService;
 import com.example.auth.model.*;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
@@ -36,43 +37,29 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-		Date currentTime = new Date();
-
 		log.info("Login process username = " + loginRequest.getUsername());
+
+		Date now = new Date();
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Optional<User> userOpt = userRepository.findByUsername(loginRequest.getUsername());
 		Map<String, String> responseToken = new HashMap<>();
-		if (userOpt.isPresent()){
-			User user = userOpt.get();
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			if (encoder.matches(loginRequest.getPassword(), user.getPassword())) {
-				if(user.getToken() != null){
-					if (!JwtUtil.isTokenExpired(user.getToken())){
-						responseToken.put("token", user.getToken());
-						log.info("User already login, token valid");
-						user.setLastLogin(currentTime);
-						userRepository.save(user);
-						return ResponseEntity
-								.ok(ApiResponse.error("User already logged in", responseToken));
-					} else {
-						log.info("token expired, create a new token");
-						String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
-						user.setToken(newToken);
-						user.setLastLogin(currentTime);
-						userRepository.save(user);
-						responseToken.put("token", newToken);
-						return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
-					}
-				} else {
-					String newToken = JwtUtil.generateToken(user.getId(), user.getUsername());
-					user.setToken(newToken);
-					user.setLastLogin(currentTime);
-					userRepository.save(user);
-					responseToken.put("token", newToken);
-					return ResponseEntity.ok(ApiResponse.success("Login successful",responseToken));
-				}
-			}
+
+		if (!userOpt.isPresent() || !encoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())){
+			return ResponseEntity.ok(ApiResponse.error("Invalid Credential", null));
+
 		}
-		return ResponseEntity.ok(ApiResponse.error("Invalid username or password",null));
+
+		User user = userOpt.get();
+		String token = UserService.reNewTokenIfExpired(user);
+
+		user.setLastLogin(now);
+		user.setToken(token);
+		userRepository.save(user);
+
+		responseToken.put("token", token);
+
+		return ResponseEntity.ok(ApiResponse.success("Login successful", responseToken));
+
 
 	}
 

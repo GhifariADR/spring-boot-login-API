@@ -15,7 +15,7 @@ public class Role {
 	@Column(nullable = false, unique = true)
 	private String name;
 
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "created_by",referencedColumnName = "id")
 	private User createdBy;
 

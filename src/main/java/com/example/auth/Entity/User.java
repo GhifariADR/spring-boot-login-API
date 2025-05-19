@@ -23,7 +23,7 @@ public class User {
 	@Column(name = "token")
 	private String token;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "role_id")
 	private Role role;
 

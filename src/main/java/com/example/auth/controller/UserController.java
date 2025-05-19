@@ -44,12 +44,16 @@ public class UserController {
 			return ResponseEntity.ok(ApiResponse.error("No users found",null));
 		}
 
-		List<UserResponse> response = new ArrayList<>();
+//		List<UserResponse> response = new ArrayList<>();
 
-		for (User user : usersPage){
-			UserResponse userResponse = new UserResponse(user.getId(), user.getUsername(), user.getEmail(),user.getRole().getName());
-			response.add(userResponse);
-		}
+		List<UserResponse> response = usersPage.stream()
+				.map(user -> new UserResponse(
+						user.getId(),
+						user.getUsername(),
+						user.getEmail(),
+						user.getRole().getName()
+				))
+				.collect(Collectors.toList());
 
 		HashMap<String, Object> responseApi = new HashMap<>();
 
@@ -77,6 +81,12 @@ public class UserController {
 		Long currentUserId = JwtUtil.extractUserId(token);
 
 		Optional<User> currentUser = userRepository.findById(currentUserId);
+
+		if (!currentUser.isPresent()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(ApiResponse.error("Invalid user", null));
+		}
+
 		if(UserService.isAdminOrSuperAdmin(currentUser.get())){
 			return ResponseEntity.ok(ApiResponse.error("Only admin or super admin can delete user",null));
 		}
