@@ -21,6 +21,12 @@ public interface UserRepository extends JpaRepository<User,Long> {
 	@Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%') ) ")
 	Page<User> searchByUsername(@Param("keyword") String keyword, Pageable pageable);
 
+	@Query("SELECT u FROM User u WHERE u.email = :email")
+	Optional<User> findByEmail(String email);
+
+	@Query("SELECT u FROM User u WHERE u.resetToken = :resetToken")
+	Optional<User> findByResetToken(String resetToken);
+
 	boolean existsByEmail(String email);
 
 	boolean existsByUsername(String username);

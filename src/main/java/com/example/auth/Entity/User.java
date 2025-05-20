@@ -30,6 +30,12 @@ public class User {
 	@Column(name = "last_login")
 	private Date lastLogin;
 
+	@Column(name = "reset_token")
+	private String resetToken;
+
+	@Column(name = "reset_token_expired")
+	private Date resetTokenExpired;
+
 
 	public Long getId() {
 		return id;
@@ -85,5 +91,21 @@ public class User {
 
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+
+	public String getResetToken() {
+		return resetToken;
+	}
+
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
+
+	public Date getResetTokenExpired() {
+		return resetTokenExpired;
+	}
+
+	public void setResetTokenExpired(Date resetTokenExpired) {
+		this.resetTokenExpired = resetTokenExpired;
 	}
 }

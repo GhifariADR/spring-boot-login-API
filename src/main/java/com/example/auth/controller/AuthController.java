@@ -1,9 +1,6 @@
 package com.example.auth.controller;
 
-import com.example.auth.dto.ApiResponse;
-import com.example.auth.dto.LoginRequest;
-import com.example.auth.dto.LogoutRequest;
-import com.example.auth.dto.RegsiterRequest;
+import com.example.auth.dto.*;
 import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
 import com.example.auth.Service.EmailService;
@@ -17,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -111,6 +105,68 @@ public class AuthController {
 
 		userRepository.save(user);
 		return ResponseEntity.ok(ApiResponse.success("User registered successfully",null));
+	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request){
+
+		log.info("forgot password process for" + request.getEmail());
+		Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+
+		if (!userOpt.isPresent()) {
+			return ResponseEntity.ok(ApiResponse.error("Email not registered", null));
+		}
+
+		User user = userOpt.get();
+		String token = UUID.randomUUID().toString();
+		Date expiry = new Date(System.currentTimeMillis() + 15 * 60 *1000); //15 menit
+
+		user.setResetToken(token);
+		user.setResetTokenExpired(expiry);
+		userRepository.save(user);
+
+		String url = "www.frontend.com/reset-password?token" + token;
+
+		emailService.sendResetPasswordEmail(user.getEmail(), user.getUsername(), url);
+
+		return ResponseEntity.ok(ApiResponse.error("Reset password link sent to your email", null));
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity<?> resetPassword (@RequestBody ResetPasswordRequest request){
+		log.info("forgot password process for" + request.getToken());
+
+		if (request.getNewPassword() == null || request.getToken() == null){
+			log.info("New password or token is null");
+			return ResponseEntity.ok(ApiResponse.error("New password or token is null", null));
+		}
+		Optional<User> optUser = userRepository.findByResetToken(request.getToken());
+
+		if (!optUser.isPresent()){
+			log.info("Invalid Token");
+			return ResponseEntity.ok(ApiResponse.error("Invalid Token", null));
+		}
+
+		User user = optUser.get();
+
+		if (user.getResetTokenExpired() == null || user.getResetTokenExpired().before(new Date())){
+
+			user.setResetToken(null);
+			user.setResetTokenExpired(null);
+			userRepository.save(user);
+			log.info("Token has expired");
+			return ResponseEntity.ok(ApiResponse.error("Token has expired", null));
+		}
+
+		String hashPassword = new BCryptPasswordEncoder().encode(request.getNewPassword());
+
+		user.setPassword(hashPassword);
+		user.setResetToken(null);
+		user.setResetTokenExpired(null);
+		userRepository.save(user);
+
+		log.info("Password reset successfully");
+		return ResponseEntity.ok(ApiResponse.success("Password reset successfully", null));
 	}
 
 

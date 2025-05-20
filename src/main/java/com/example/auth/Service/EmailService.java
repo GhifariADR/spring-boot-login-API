@@ -41,4 +41,26 @@ public class EmailService {
 		}
 	}
 
+	public void sendResetPasswordEmail(String to, String username, String resetLink){
+		try {
+			Context context = new Context();
+			context.setVariable("username", username);
+			context.setVariable("resetLink", resetLink);
+
+			String htmlContent = templateEngine.process("email/reset-password", context);
+
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+			helper.setTo(to);
+			helper.setSubject("Reset Your Password");
+			helper.setText(htmlContent, true);
+
+			mailSender.send(message);
+
+		} catch (MessagingException e){
+			throw new RuntimeException("Gagal mengirim email: " + e.getMessage());
+		}
+	}
+
 }
