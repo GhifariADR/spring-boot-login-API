@@ -1,8 +1,9 @@
-package com.example.auth.Filter;
+package com.example.auth.security;
 
 import com.example.auth.Entity.User;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 	@Autowired
 	private UserRepository userRepository;
@@ -43,33 +43,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		final String token = authHeader.substring(7);
-		logger.debug("Processing JWT token: {}", token.substring(0, 5) + "...");
+		log.info("Processing JWT token: {}", token.substring(0, 5) + "...");
 
 		try {
 			String username = JwtUtil.extractUsername(token);
 			Long userId = JwtUtil.extractUserId(token);
 
 			if (username == null || userId == null) {
-				logger.warn("Invalid token structure - missing username or userId");
+				log.warn("Invalid token structure - missing username or userId");
 				sendErrorResponse(response, "Invalid token structure");
 				return;
 			}
-			logger.debug("Extracted username: {}, userId: {}", username, userId);
+			log.info("Extracted username: {}, userId: {}", username, userId);
 
 			Optional<User> userOpt = userRepository.findById(userId);
 
 			if (!userOpt.isPresent()) {
-				logger.warn("User not found for username: {}", username);
+				log.warn("User not found for username: {}", username);
 				sendErrorResponse(response, "User not found");
 				return;
 			}
 
 			User user = userOpt.get();
-			logger.debug("Found user in database: {}", user.getUsername());
+			log.info("Found user in database: {}", user.getUsername());
 
 			// Validate token against database and expiration
 			if (!token.equals(user.getToken()) ) {
-				logger.warn("Token mismatch for user: {}", username);
+				log.warn("Token mismatch for user: {}", username);
 				sendErrorResponse(response, "Invalid or expired token");
 				return;
 			}

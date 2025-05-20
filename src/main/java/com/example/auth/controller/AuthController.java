@@ -1,9 +1,9 @@
 package com.example.auth.controller;
 
-import com.example.auth.DTO.ApiResponse;
-import com.example.auth.DTO.LoginRequest;
-import com.example.auth.DTO.LogoutRequest;
-import com.example.auth.DTO.RegsiterRequest;
+import com.example.auth.dto.ApiResponse;
+import com.example.auth.dto.LoginRequest;
+import com.example.auth.dto.LogoutRequest;
+import com.example.auth.dto.RegsiterRequest;
 import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
 import com.example.auth.Service.EmailService;

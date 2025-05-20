@@ -1,27 +1,28 @@
 package com.example.auth.controller;
 
 import com.example.auth.Service.UserService;
-import com.example.auth.DTO.ApiResponse;
+import com.example.auth.dto.ApiResponse;
 import com.example.auth.Entity.User;
-import com.example.auth.DTO.UserResponse;
+import com.example.auth.dto.UserPaginationRequest;
+import com.example.auth.dto.UserResponse;
 import com.example.auth.repository.UserRepository;
 import com.example.auth.security.JwtUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
@@ -32,25 +33,28 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@GetMapping ("/getAll")
-	public ResponseEntity<?> getAllUsers(
-			@PageableDefault(page = 0, size = 3, sort = "username", direction = Sort.Direction.ASC) Pageable pageable
-	)
-	{
-		Page<User> usersPage = userRepository.findAll(pageable);
+	@PostMapping ("/getAll")
+	public ResponseEntity<?> getAllUsers(@RequestBody UserPaginationRequest request) {
+		Sort.Direction direction = Sort.Direction.fromString(request.getDirection());
+		Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(direction, request.getSortBy()));
+
+		String keyword = request.getKeyword() != null ? request.getKeyword() : "";
+		Page<User> usersPage = userRepository.searchByUsername(keyword, pageable);
 
 		if (usersPage.isEmpty()){
 			return ResponseEntity.ok(ApiResponse.error("No users found",null));
 		}
+		List<UserResponse> response = new ArrayList<>();
 
-		List<UserResponse> response = usersPage.stream()
-				.map(user -> new UserResponse(
-						user.getId(),
-						user.getUsername(),
-						user.getEmail(),
-						user.getRole().getName()
-				))
-				.collect(Collectors.toList());
+		for (User user : usersPage){
+			UserResponse userResponse = new UserResponse(
+					user.getId(),
+					user.getUsername(),
+					user.getEmail(),
+					user.getRole().getName()
+			);
+			response.add(userResponse);
+		}
 
 		HashMap<String, Object> responseApi = new HashMap<>();
 
@@ -58,7 +62,6 @@ public class UserController {
 		responseApi.put("currentPage", usersPage.getNumber());
 		responseApi.put("totalPage",usersPage.getTotalPages());
 		responseApi.put("totalItems", usersPage.getTotalElements());
-
 
 		return ResponseEntity.ok(ApiResponse.success("Users found", responseApi));
 

@@ -1,4 +1,4 @@
-package com.example.auth.DTO;
+package com.example.auth.dto;
 
 public class LoginRequest {
 	private String username;
