@@ -125,11 +125,11 @@ public class AuthController {
 		user.setResetTokenExpired(expiry);
 		userRepository.save(user);
 
-		String url = "www.frontend.com/reset-password?token" + token;
+		String url = "http://localhost:5173/reset-password?token=" + token;
 
 		emailService.sendResetPasswordEmail(user.getEmail(), user.getUsername(), url);
 
-		return ResponseEntity.ok(ApiResponse.error("Reset password link sent to your email", null));
+		return ResponseEntity.ok(ApiResponse.success("Reset password link sent to your email", null));
 	}
 
 	@PostMapping("/reset-password")
