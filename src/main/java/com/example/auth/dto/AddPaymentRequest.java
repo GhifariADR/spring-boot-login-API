@@ -4,39 +4,21 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class PaymentResponse {
+public class AddPaymentRequest {
 
-	private Long id;
+	private Long rentalUnitId;
 
 	private BigDecimal amount;
 
-	private Date monthPaidFor;
-
 	private String payerName;
 
-	private Date paymentDate;
+	private LocalDate paymentDate;
+
+	private Date monthPaidFor;
 
 	private String paymentMethod;
 
 	private String notes;
-
-	public PaymentResponse(Long id, BigDecimal amount, Date monthPaidFor, String payerName, Date paymentDate, String paymentMethod , String notes) {
-		this.id = id;
-		this.amount = amount;
-		this.monthPaidFor = monthPaidFor;
-		this.payerName = payerName;
-		this.paymentDate = paymentDate;
-		this.paymentMethod = paymentMethod;
-		this.notes = notes;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public BigDecimal getAmount() {
 		return amount;
@@ -46,12 +28,12 @@ public class PaymentResponse {
 		this.amount = amount;
 	}
 
-	public Date getMonthPaidFor() {
-		return monthPaidFor;
+	public Long getRentalUnitId() {
+		return rentalUnitId;
 	}
 
-	public void setMonthPaidFor(Date monthPaidFor) {
-		this.monthPaidFor = monthPaidFor;
+	public void setRentalUnitId(Long rentalUnitId) {
+		this.rentalUnitId = rentalUnitId;
 	}
 
 	public String getPayerName() {
@@ -62,12 +44,20 @@ public class PaymentResponse {
 		this.payerName = payerName;
 	}
 
-	public Date getPaymentDate() {
+	public LocalDate getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Date paymentDate) {
+	public void setPaymentDate(LocalDate paymentDate) {
 		this.paymentDate = paymentDate;
+	}
+
+	public Date getMonthPaidFor() {
+		return monthPaidFor;
+	}
+
+	public void setMonthPaidFor(Date monthPaidFor) {
+		this.monthPaidFor = monthPaidFor;
 	}
 
 	public String getPaymentMethod() {

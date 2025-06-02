@@ -2,19 +2,20 @@ package com.example.auth.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 public class PaymentHistoryResponse {
 
 	private Long id;
 	private BigDecimal amount;
-	private String monthPaidFor;
+	private Date monthPaidFor;
 	private String payerName;
-	private LocalDate paymentDate;
+	private Date paymentDate;
 	private String paymentMethod;
 	private Long rentalUnitId;
 
-	public PaymentHistoryResponse(Long id, BigDecimal amount, String monthPaidFor, String payerName,
-								  LocalDate paymentDate, String paymentMethod, Long rentalUnitId) {
+	public PaymentHistoryResponse(Long id, BigDecimal amount, Date monthPaidFor, String payerName,
+								  Date paymentDate, String paymentMethod, Long rentalUnitId) {
 		this.id = id;
 		this.amount = amount;
 		this.monthPaidFor = monthPaidFor;
@@ -40,11 +41,11 @@ public class PaymentHistoryResponse {
 		this.amount = amount;
 	}
 
-	public String getMonthPaidFor() {
+	public Date getMonthPaidFor() {
 		return monthPaidFor;
 	}
 
-	public void setMonthPaidFor(String monthPaidFor) {
+	public void setMonthPaidFor(Date monthPaidFor) {
 		this.monthPaidFor = monthPaidFor;
 	}
 
@@ -56,11 +57,11 @@ public class PaymentHistoryResponse {
 		this.payerName = payerName;
 	}
 
-	public LocalDate getPaymentDate() {
+	public Date getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(LocalDate paymentDate) {
+	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 

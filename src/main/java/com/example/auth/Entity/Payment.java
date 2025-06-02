@@ -3,6 +3,7 @@ package com.example.auth.Entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "payments")
@@ -19,13 +20,14 @@ public class Payment {
 	@Column(name = "payer_name")
 	private String payerName;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "payment_date")
-	private LocalDate paymentDate;
+	private Date paymentDate;
 
 	private BigDecimal amount;
 
 	@Column(name = "month_paid_for")
-	private String monthPaidFor;
+	private Date monthPaidFor;
 
 	@Column(name = "payment_method")
 	private String paymentMethod;
@@ -48,11 +50,11 @@ public class Payment {
 		this.rentalUnit = rentalUnit;
 	}
 
-	public LocalDate getPaymentDate() {
+	public Date getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(LocalDate paymentDate) {
+	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
@@ -64,11 +66,11 @@ public class Payment {
 		this.amount = amount;
 	}
 
-	public String getMonthPaidFor() {
+	public Date getMonthPaidFor() {
 		return monthPaidFor;
 	}
 
-	public void setMonthPaidFor(String monthPaidFor) {
+	public void setMonthPaidFor(Date monthPaidFor) {
 		this.monthPaidFor = monthPaidFor;
 	}
 
