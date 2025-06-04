@@ -101,4 +101,24 @@ public class UserController {
 		userRepository.deleteById(id);
 		return ResponseEntity.ok(ApiResponse.success("Users deleted", null));
 	}
+
+	@PostMapping("/{id}")
+	public ResponseEntity<?> getUserById(@PathVariable Long id){
+		Optional<User> userOptional = userRepository.findById(id);
+
+		if (!userOptional.isPresent()){
+			return ResponseEntity.ok(ApiResponse.error("Users not found", null));
+		}
+
+		User user = userOptional.get();
+		UserResponse response = new UserResponse(
+				user.getId(),
+				user.getUsername(),
+				user.getEmail(),
+				user.getRole().getName()
+		);
+
+		return ResponseEntity.ok(ApiResponse.success("Users found", response));
+
+	}
 }

@@ -11,10 +11,11 @@ public class JwtUtil {
 	private static final String SECRET_KEY = "rahasia";
 	private static final long EXPIRATION_TIME = 86400000; // 1 hari (ms)
 
-	public static String generateToken(Long id,String username) {
+	public static String generateToken(Long id,String username, String role) {
 		return Jwts.builder()
 				.setSubject(username)
 				.claim("id", id)
+				.claim("role",role)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY)

@@ -19,11 +19,11 @@ public class UserService {
 
 		if (user.getToken() != null && JwtUtil.isTokenExpired(user.getToken())){
 			log.info("Token expired, renew token");
-			return JwtUtil.generateToken(user.getId(), user.getUsername());
+			return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole().getName());
 
 		} else if (user.getToken() == null) {
 			log.info("generate new token");
-			return JwtUtil.generateToken(user.getId(), user.getUsername());
+			return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole().getName());
 		}
 		log.info("use old token");
 		return user.getToken();
