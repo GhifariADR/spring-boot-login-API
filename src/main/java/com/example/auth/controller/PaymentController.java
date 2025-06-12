@@ -2,16 +2,15 @@ package com.example.auth.controller;
 
 import com.example.auth.Entity.Payment;
 import com.example.auth.Entity.RentalUnits;
-import com.example.auth.dto.AddPaymentRequest;
+import com.example.auth.dto.payment.AddPaymentRequest;
 import com.example.auth.dto.ApiResponse;
-import com.example.auth.dto.PaymentHistoryResponse;
+import com.example.auth.dto.payment.PaymentHistoryResponse;
 import com.example.auth.repository.PaymentRepository;
 import com.example.auth.repository.RentalUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

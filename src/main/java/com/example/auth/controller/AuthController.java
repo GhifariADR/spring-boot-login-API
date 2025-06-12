@@ -5,6 +5,7 @@ import com.example.auth.Entity.Role;
 import com.example.auth.Entity.User;
 import com.example.auth.Service.EmailService;
 import com.example.auth.Service.UserService;
+import com.example.auth.dto.user.*;
 import com.example.auth.repository.RoleRepository;
 import com.example.auth.repository.UserRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;

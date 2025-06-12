@@ -1,4 +1,6 @@
-package com.example.auth.dto;
+package com.example.auth.dto.rentalUnit;
+
+import com.example.auth.dto.payment.PaymentResponse;
 
 import java.math.BigDecimal;
 import java.util.List;

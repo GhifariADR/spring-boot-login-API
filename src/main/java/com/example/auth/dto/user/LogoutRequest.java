@@ -1,4 +1,4 @@
-package com.example.auth.dto;
+package com.example.auth.dto.user;
 
 public class LogoutRequest {
 	private String token;

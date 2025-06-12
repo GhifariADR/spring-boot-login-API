@@ -1,4 +1,4 @@
-package com.example.auth.dto;
+package com.example.auth.dto.payment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

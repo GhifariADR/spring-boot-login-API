@@ -1,33 +1,28 @@
-package com.example.auth.dto;
+package com.example.auth.dto.payment;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class PaymentResponse {
+public class PaymentHistoryResponse {
 
 	private Long id;
-
 	private BigDecimal amount;
-
 	private Date monthPaidFor;
-
 	private String payerName;
-
 	private Date paymentDate;
-
 	private String paymentMethod;
+	private Long rentalUnitId;
 
-	private String notes;
-
-	public PaymentResponse(Long id, BigDecimal amount, Date monthPaidFor, String payerName, Date paymentDate, String paymentMethod , String notes) {
+	public PaymentHistoryResponse(Long id, BigDecimal amount, Date monthPaidFor, String payerName,
+								  Date paymentDate, String paymentMethod, Long rentalUnitId) {
 		this.id = id;
 		this.amount = amount;
 		this.monthPaidFor = monthPaidFor;
 		this.payerName = payerName;
 		this.paymentDate = paymentDate;
 		this.paymentMethod = paymentMethod;
-		this.notes = notes;
+		this.rentalUnitId = rentalUnitId;
 	}
 
 	public Long getId() {
@@ -78,11 +73,11 @@ public class PaymentResponse {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public String getNotes() {
-		return notes;
+	public Long getRentalUnitId() {
+		return rentalUnitId;
 	}
 
-	public void setNotes(String notes) {
-		this.notes = notes;
+	public void setRentalUnitId(Long rentalUnitId) {
+		this.rentalUnitId = rentalUnitId;
 	}
 }
