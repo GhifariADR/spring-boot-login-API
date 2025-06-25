@@ -104,7 +104,7 @@ public class RentalUnitController {
 		return ResponseEntity.ok(ApiResponse.success("Unit created",null));
 	}
 
-	@PostMapping("/delete-all")
+	@PostMapping("/delete-multiple")
 	public ResponseEntity<?> deleteAllById(@RequestBody List<Long> ids){
 		if (ids.isEmpty()){
 			return ResponseEntity.ok(ApiResponse.error("List is empty",null));

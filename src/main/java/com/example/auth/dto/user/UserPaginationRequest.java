@@ -4,7 +4,7 @@ public class UserPaginationRequest {
 
 	private int page = 0;
 
-	private int size = 3;
+	private int size = 5;
 
 	private String sortBy = "username";
 
