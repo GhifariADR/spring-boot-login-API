@@ -19,6 +19,7 @@ import java.util.*;
 
 @RestController
 @Slf4j
+@CrossOrigin(origins = "*")
 @Tag(name = "Authentication" , description = "API untuk login dan register")
 @RequestMapping("/auth")
 public class AuthController {
