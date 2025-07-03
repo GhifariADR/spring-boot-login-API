@@ -19,7 +19,7 @@ import java.util.*;
 
 @RestController
 @Slf4j
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://auth-fe.up.railway.app/", allowCredentials = "true")
 @Tag(name = "Authentication" , description = "API untuk login dan register")
 @RequestMapping("/auth")
 public class AuthController {
