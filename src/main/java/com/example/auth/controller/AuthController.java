@@ -126,7 +126,7 @@ public class AuthController {
 		user.setResetTokenExpired(expiry);
 		userRepository.save(user);
 
-		String url = "http://localhost:5173/reset-password?token=" + token;
+		String url = "https://auth-fe.up.railway.app/reset-password?token=" + token;
 
 		emailService.sendResetPasswordEmail(user.getEmail(), user.getUsername(), url);
 
