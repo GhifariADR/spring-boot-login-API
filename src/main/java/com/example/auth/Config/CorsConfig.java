@@ -14,7 +14,7 @@ public class CorsConfig {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**") // semua path
-						.allowedOrigins("http://localhost:5173") // frontend kamu
+						.allowedOrigins("http://localhost:5173", "https://auth-fe-sandy.vercel.app/", "https://auth-fe.up.railway.app/") // frontend kamu
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 						.allowedHeaders("*")
 						.allowCredentials(true);

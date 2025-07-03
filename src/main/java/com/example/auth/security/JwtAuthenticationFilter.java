@@ -54,7 +54,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				sendErrorResponse(response, "Invalid token structure");
 				return;
 			}
-			log.info("Extracted username: {}, userId: {}", username, userId);
 
 			Optional<User> userOpt = userRepository.findById(userId);
 
@@ -65,7 +64,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 
 			User user = userOpt.get();
-			log.info("Found user in database: {}", user.getUsername());
 
 			// Validate token against database and expiration
 			if (!token.equals(user.getToken()) ) {
